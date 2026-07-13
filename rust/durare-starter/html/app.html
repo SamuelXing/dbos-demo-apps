@@ -682,9 +682,9 @@
           <div class="card editor">
             <div class="chrome">
               <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-              <span class="filename">main.go</span>
+              <span class="filename">main.rs</span>
             </div>
-            <pre class="code"><span class="code-line"><span class="keyword">func</span> <span class="function">ExampleWorkflow</span><span class="punct">(</span>ctx dbos.DBOSContext<span class="punct">)</span> <span class="punct">{</span></span><span class="code-line indent workflow-step-1"><span class="function">dbos.RunAsStep</span><span class="punct">(</span>ctx, <span class="function">stepOne</span><span class="punct">)</span></span><span class="code-line indent workflow-step-2"><span class="function">dbos.RunAsStep</span><span class="punct">(</span>ctx, <span class="function">stepTwo</span><span class="punct">)</span></span><span class="code-line indent workflow-step-3"><span class="function">dbos.RunAsStep</span><span class="punct">(</span>ctx, <span class="function">stepThree</span><span class="punct">)</span></span><span class="code-line"><span class="punct">}</span></span><span class="code-line"> </span><span class="code-block-step step-1"><span class="code-line"><span class="keyword">func</span> <span class="function">stepOne</span><span class="punct">(</span>ctx context.Context<span class="punct">)</span> <span class="punct">(</span>string<span class="punct">,</span> error<span class="punct">)</span> <span class="punct">{</span></span><span class="code-line indent"><span class="function">time.Sleep</span><span class="punct">(</span><span class="num-lit">5</span> <span class="punct">*</span> time.Second<span class="punct">)</span></span><span class="code-line indent"><span class="function">fmt.Println</span><span class="punct">(</span><span class="string">"Completed step 1!"</span><span class="punct">)</span></span><span class="code-line indent"><span class="keyword">return</span> <span class="string">"Step 1 completed"</span><span class="punct">,</span> <span class="keyword">nil</span></span><span class="code-line"><span class="punct">}</span></span></span><span class="code-line"> </span><span class="code-block-step step-2"><span class="code-line"><span class="keyword">func</span> <span class="function">stepTwo</span><span class="punct">(</span>ctx context.Context<span class="punct">)</span> <span class="punct">(</span>string<span class="punct">,</span> error<span class="punct">)</span> <span class="punct">{</span></span><span class="code-line indent"><span class="function">time.Sleep</span><span class="punct">(</span><span class="num-lit">5</span> <span class="punct">*</span> time.Second<span class="punct">)</span></span><span class="code-line indent"><span class="function">fmt.Println</span><span class="punct">(</span><span class="string">"Completed step 2!"</span><span class="punct">)</span></span><span class="code-line indent"><span class="keyword">return</span> <span class="string">"Step 2 completed"</span><span class="punct">,</span> <span class="keyword">nil</span></span><span class="code-line"><span class="punct">}</span></span></span><span class="code-line"> </span><span class="code-block-step step-3"><span class="code-line"><span class="keyword">func</span> <span class="function">stepThree</span><span class="punct">(</span>ctx context.Context<span class="punct">)</span> <span class="punct">(</span>string<span class="punct">,</span> error<span class="punct">)</span> <span class="punct">{</span></span><span class="code-line indent"><span class="function">time.Sleep</span><span class="punct">(</span><span class="num-lit">5</span> <span class="punct">*</span> time.Second<span class="punct">)</span></span><span class="code-line indent"><span class="function">fmt.Println</span><span class="punct">(</span><span class="string">"Completed step 3!"</span><span class="punct">)</span></span><span class="code-line indent"><span class="keyword">return</span> <span class="string">"Step 3 completed"</span><span class="punct">,</span> <span class="keyword">nil</span></span><span class="code-line"><span class="punct">}</span></span></span></pre>
+            <pre class="code"><span class="code-line"><span class="keyword">#[durare::workflow]</span></span><span class="code-line"><span class="keyword">async fn</span> <span class="function">example_workflow</span>(ctx: DurableContext) {</span><span class="code-line indent workflow-step-1"><span class="function">step_one</span>(&amp;ctx).<span class="keyword">await</span>?;</span><span class="code-line indent workflow-step-2"><span class="function">step_two</span>(&amp;ctx).<span class="keyword">await</span>?;</span><span class="code-line indent workflow-step-3"><span class="function">step_three</span>(&amp;ctx).<span class="keyword">await</span>?;</span><span class="code-line">}</span><span class="code-line"> </span><span class="code-block-step step-1"><span class="code-line"><span class="keyword">#[durare::step]</span></span><span class="code-line"><span class="keyword">async fn</span> <span class="function">step_one</span>(cx: &amp;DurableContext) -&gt; Result&lt;String&gt; {</span><span class="code-line indent"><span class="function">sleep</span>(Duration::<span class="function">from_secs</span>(<span class="num-lit">5</span>)).<span class="keyword">await</span>;</span><span class="code-line indent"><span class="function">println!</span>(<span class="string">"Completed step 1!"</span>);</span><span class="code-line indent"><span class="keyword">Ok</span>(<span class="string">"Step 1 completed"</span>.<span class="function">into</span>())</span><span class="code-line">}</span></span><span class="code-line"> </span><span class="code-block-step step-2"><span class="code-line"><span class="keyword">#[durare::step]</span></span><span class="code-line"><span class="keyword">async fn</span> <span class="function">step_two</span>(cx: &amp;DurableContext) -&gt; Result&lt;String&gt; {</span><span class="code-line indent"><span class="function">sleep</span>(Duration::<span class="function">from_secs</span>(<span class="num-lit">5</span>)).<span class="keyword">await</span>;</span><span class="code-line indent"><span class="function">println!</span>(<span class="string">"Completed step 2!"</span>);</span><span class="code-line indent"><span class="keyword">Ok</span>(<span class="string">"Step 2 completed"</span>.<span class="function">into</span>())</span><span class="code-line">}</span></span><span class="code-line"> </span><span class="code-block-step step-3"><span class="code-line"><span class="keyword">#[durare::step]</span></span><span class="code-line"><span class="keyword">async fn</span> <span class="function">step_three</span>(cx: &amp;DurableContext) -&gt; Result&lt;String&gt; {</span><span class="code-line indent"><span class="function">sleep</span>(Duration::<span class="function">from_secs</span>(<span class="num-lit">5</span>)).<span class="keyword">await</span>;</span><span class="code-line indent"><span class="function">println!</span>(<span class="string">"Completed step 3!"</span>);</span><span class="code-line indent"><span class="keyword">Ok</span>(<span class="string">"Step 3 completed"</span>.<span class="function">into</span>())</span><span class="code-line">}</span></span></pre>
           </div>
 
           <!-- controls -->
@@ -714,7 +714,7 @@
                   <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
                 <div class="step-label">
-                  <span class="step-title">stepOne</span>
+                  <span class="step-title">step_one</span>
                   <span class="step-state">Waiting</span>
                 </div>
               </div>
@@ -724,7 +724,7 @@
                   <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
                 <div class="step-label">
-                  <span class="step-title">stepTwo</span>
+                  <span class="step-title">step_two</span>
                   <span class="step-state">Waiting</span>
                 </div>
               </div>
@@ -734,7 +734,7 @@
                   <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
                 <div class="step-label">
-                  <span class="step-title">stepThree</span>
+                  <span class="step-title">step_three</span>
                   <span class="step-state">Waiting</span>
                 </div>
               </div>
@@ -745,7 +745,7 @@
         <p class="footer">
           <span class="line">
             Check out the
-            <a href="https://docs.dbos.dev/golang/programming-guide" target="_blank">programming guide</a>
+            <a href="https://docs.rs/durare" target="_blank">programming guide</a>
             to learn how to build with DBOS.
           </span>
         </p>
@@ -763,9 +763,9 @@
           <div class="card editor">
             <div class="chrome">
               <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-              <span class="filename">main.go</span>
+              <span class="filename">main.rs</span>
             </div>
-            <pre class="code"><span class="code-line"><span class="keyword">func</span> <span class="function">ScheduledWorkflow</span><span class="punct">(</span>ctx dbos.DBOSContext<span class="punct">,</span></span><span class="code-line indent">input dbos.ScheduledWorkflowInput<span class="punct">)</span> <span class="punct">{</span></span><span class="code-block-step sched-line-1"><span class="code-line indent"><span class="function">fmt.Println</span><span class="punct">(</span><span class="string">"Scheduled workflow starting."</span><span class="punct">)</span></span></span><span class="code-block-step sched-line-2"><span class="code-line indent"><span class="function">dbos.Sleep</span><span class="punct">(</span>ctx, <span class="num-lit">1</span> <span class="punct">*</span> time.Second<span class="punct">)</span></span></span><span class="code-block-step sched-line-3"><span class="code-line indent"><span class="function">fmt.Println</span><span class="punct">(</span><span class="string">"Scheduled workflow ending."</span><span class="punct">)</span></span></span><span class="code-line"><span class="punct">}</span></span><span class="code-line"> </span><span class="code-line"><span class="function">dbos.ApplySchedules</span><span class="punct">(</span>ctx, <span class="punct">[]</span>dbos.ApplySchedulesRequest<span class="punct">{{</span></span><span class="code-line indent">ScheduleName<span class="punct">:</span> <span class="string">"scheduled-workflow"</span><span class="punct">,</span></span><span class="code-line indent">WorkflowFn<span class="punct">:</span>   <span class="function">ScheduledWorkflow</span><span class="punct">,</span></span><span class="code-line indent">Schedule<span class="punct">:</span>     <span class="string">"*/5 * * * * *"</span><span class="punct">,</span></span><span class="code-line"><span class="punct">}})</span></span></pre>
+            <pre class="code"><span class="code-line"><span class="keyword">#[durare::workflow]</span></span><span class="code-line"><span class="keyword">async fn</span> <span class="function">scheduled_workflow</span>(ctx: DurableContext,</span><span class="code-line indent">tick: ScheduledInput) {</span><span class="code-block-step sched-line-1"><span class="code-line indent"><span class="function">println!</span>(<span class="string">"Scheduled workflow starting."</span>);</span></span><span class="code-block-step sched-line-2"><span class="code-line indent">ctx.<span class="function">sleep</span>(Duration::<span class="function">from_secs</span>(<span class="num-lit">1</span>)).<span class="keyword">await</span>;</span></span><span class="code-block-step sched-line-3"><span class="code-line indent"><span class="function">println!</span>(<span class="string">"Scheduled workflow ending."</span>);</span></span><span class="code-line">}</span><span class="code-line"> </span><span class="code-line">engine.<span class="function">apply_schedules</span>(<span class="function">vec!</span>[ApplySchedule::<span class="function">new</span>(</span><span class="code-line indent"><span class="string">"scheduled-workflow"</span>, <span class="string">"ScheduledWorkflow"</span>,</span><span class="code-line indent"><span class="string">"*/5 * * * * *"</span>)]).<span class="keyword">await</span>?;</span></pre>
           </div>
 
           <!-- schedule controls -->
@@ -805,7 +805,7 @@
         <p class="footer">
           <span class="line">
             Check out the
-            <a href="https://docs.dbos.dev/golang/tutorials/workflow-tutorial#scheduled-workflows" target="_blank">scheduling guide</a>
+            <a href="https://docs.rs/durare" target="_blank">scheduling guide</a>
             to learn how to run workflows on a cron schedule.
           </span>
         </p>
@@ -824,9 +824,9 @@
           <div class="card editor">
             <div class="chrome">
               <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-              <span class="filename">main.go</span>
+              <span class="filename">main.rs</span>
             </div>
-            <pre class="code"><span class="code-line"><span class="keyword">func</span> <span class="function">EnqueuedWorkflow</span><span class="punct">(</span>ctx dbos.DBOSContext<span class="punct">)</span> <span class="punct">{</span></span><span class="code-block-step queue-line-1"><span class="code-line indent"><span class="function">fmt.Println</span><span class="punct">(</span><span class="string">"Enqueued workflow starting."</span><span class="punct">)</span></span></span><span class="code-block-step queue-line-2"><span class="code-line indent"><span class="function">dbos.Sleep</span><span class="punct">(</span>ctx, <span class="num-lit">5</span> <span class="punct">*</span> time.Second<span class="punct">)</span></span></span><span class="code-block-step queue-line-3"><span class="code-line indent"><span class="function">fmt.Println</span><span class="punct">(</span><span class="string">"Enqueued workflow ending."</span><span class="punct">)</span></span></span><span class="code-line"><span class="punct">}</span></span><span class="code-line"> </span><span class="code-line"><span class="function">dbos.RegisterQueue</span><span class="punct">(</span>ctx, <span class="string">"demo-queue"</span><span class="punct">,</span></span><span class="code-line indent"><span class="function">dbos.WithWorkerConcurrency</span><span class="punct">(</span><span class="num-lit">3</span><span class="punct">))</span></span><span class="code-line"> </span><span class="code-line"><span class="function">dbos.RunWorkflow</span><span class="punct">(</span>ctx, <span class="function">EnqueuedWorkflow</span><span class="punct">,</span> <span class="string">""</span><span class="punct">,</span></span><span class="code-line indent"><span class="function">dbos.WithQueue</span><span class="punct">(</span><span class="string">"demo-queue"</span><span class="punct">))</span></span></pre>
+            <pre class="code"><span class="code-line"><span class="keyword">#[durare::workflow]</span></span><span class="code-line"><span class="keyword">async fn</span> <span class="function">enqueued_workflow</span>(ctx: DurableContext) {</span><span class="code-block-step queue-line-1"><span class="code-line indent"><span class="function">println!</span>(<span class="string">"Enqueued workflow starting."</span>);</span></span><span class="code-block-step queue-line-2"><span class="code-line indent">ctx.<span class="function">sleep</span>(Duration::<span class="function">from_secs</span>(<span class="num-lit">5</span>)).<span class="keyword">await</span>;</span></span><span class="code-block-step queue-line-3"><span class="code-line indent"><span class="function">println!</span>(<span class="string">"Enqueued workflow ending."</span>);</span></span><span class="code-line">}</span><span class="code-line"> </span><span class="code-line">engine.<span class="function">register_queue</span>(WorkflowQueue::<span class="function">new</span>(<span class="string">"demo-queue"</span>)</span><span class="code-line indent">.<span class="function">worker_concurrency</span>(<span class="num-lit">3</span>));</span><span class="code-line"> </span><span class="code-line">engine.<span class="function">start_with</span>(EnqueuedWorkflow, <span class="string">""</span>.<span class="function">into</span>(),</span><span class="code-line indent">WorkflowOptions::<span class="function">with_id</span>(id).<span class="function">queue</span>(<span class="string">"demo-queue"</span>)).<span class="keyword">await</span>?;</span></pre>
           </div>
 
           <!-- queue controls -->
@@ -864,7 +864,7 @@
         <p class="footer">
           <span class="line">
             DBOS queues offer many additional controls for rate limiting, deduplication, debouncing, partitioning, prioritization and more.
-            See the <a href="https://docs.dbos.dev/golang/tutorials/queue-tutorial" target="_blank">queue tutorial</a> for details.
+            See the <a href="https://docs.rs/durare/latest/durare/queues/" target="_blank">queue tutorial</a> for details.
           </span>
         </p>
       </div>
@@ -873,8 +873,8 @@
       <div id="tab-communication" class="tab-content">
         <p class="lede">
           DBOS workflows can <strong>receive messages</strong> while running, enabling inter-workflow communication and human-in-the-loop patterns.
-          <code>dbos.Recv()</code> durably waits for a message, surviving crashes and restarts.
-          Here we use <code>dbos.Send()</code> to deliver a decision from an endpoint.
+          <code>ctx.recv()</code> durably waits for a message, surviving crashes and restarts.
+          Here we use <code>engine.send()</code> to deliver a decision from an endpoint.
         </p>
 
         <div class="grid">
@@ -882,9 +882,9 @@
           <div class="card editor">
             <div class="chrome">
               <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-              <span class="filename">main.go</span>
+              <span class="filename">main.rs</span>
             </div>
-            <pre class="code"><span class="code-line"><span class="keyword">func</span> <span class="function">CommunicationWorkflow</span><span class="punct">(</span>ctx dbos.DBOSContext<span class="punct">)</span> <span class="punct">{</span></span><span class="code-block-step comm-line-1"><span class="code-line indent"><span class="function">dbos.RunAsStep</span><span class="punct">(</span>ctx, <span class="function">commStepOne</span><span class="punct">)</span></span></span><span class="code-line indent"><span class="function">dbos.SetEvent</span><span class="punct">(</span>ctx, <span class="string">"comm_status"</span><span class="punct">,</span> <span class="string">"waiting"</span><span class="punct">)</span></span><span class="code-block-step comm-line-2"><span class="code-line indent">decision, _ <span class="punct">:=</span> <span class="function">dbos.Recv</span><span class="punct">[</span>string<span class="punct">](</span>ctx,</span><span class="code-line indent">    <span class="string">"approval"</span><span class="punct">,</span> <span class="num-lit">120</span> <span class="punct">*</span> time.Second<span class="punct">)</span></span></span><span class="code-line indent"><span class="keyword">if</span> decision <span class="punct">==</span> <span class="string">"approve"</span> <span class="punct">{</span></span><span class="code-block-step comm-line-3"><span class="code-line indent2"><span class="function">dbos.RunAsStep</span><span class="punct">(</span>ctx, <span class="function">commStepTwo</span><span class="punct">)</span></span></span><span class="code-line indent"><span class="punct">}</span> <span class="keyword">else if</span> decision <span class="punct">==</span> <span class="string">"deny"</span> <span class="punct">{</span></span><span class="code-line indent2"><span class="function">fmt.Println</span><span class="punct">(</span><span class="string">"Denied."</span><span class="punct">)</span></span><span class="code-line indent"><span class="punct">}</span> <span class="keyword">else</span> <span class="punct">{</span>  <span class="punct">// timeout</span></span><span class="code-line indent2"><span class="function">fmt.Println</span><span class="punct">(</span><span class="string">"Timed out!"</span><span class="punct">)</span></span><span class="code-line indent"><span class="punct">}</span></span><span class="code-line"><span class="punct">}</span></span></pre>
+            <pre class="code"><span class="code-line"><span class="keyword">#[durare::workflow]</span></span><span class="code-line"><span class="keyword">async fn</span> <span class="function">communication_workflow</span>(ctx: DurableContext) {</span><span class="code-block-step comm-line-1"><span class="code-line indent"><span class="function">comm_step_one</span>(&amp;ctx).<span class="keyword">await</span>?;</span></span><span class="code-line indent">ctx.<span class="function">set_event</span>(<span class="string">"comm_status"</span>, <span class="string">"waiting"</span>).<span class="keyword">await</span>?;</span><span class="code-block-step comm-line-2"><span class="code-line indent"><span class="keyword">let</span> decision = ctx.<span class="function">recv</span>::&lt;String&gt;(</span><span class="code-line indent">    <span class="string">"approval"</span>, Duration::<span class="function">from_secs</span>(<span class="num-lit">120</span>)).<span class="keyword">await</span>?;</span></span><span class="code-line indent"><span class="keyword">match</span> decision.<span class="function">as_deref</span>() {</span><span class="code-block-step comm-line-3"><span class="code-line indent2"><span class="function">Some</span>(<span class="string">"approve"</span>) =&gt; <span class="function">comm_step_two</span>(&amp;ctx).<span class="keyword">await</span>?,</span></span><span class="code-line indent2"><span class="function">Some</span>(<span class="string">"deny"</span>) =&gt; <span class="function">println!</span>(<span class="string">"Denied."</span>),</span><span class="code-line indent2">_ =&gt; <span class="function">println!</span>(<span class="string">"Timed out!"</span>),</span><span class="code-line indent">}</span><span class="code-line">}</span></pre>
           </div>
 
           <!-- controls -->
@@ -918,7 +918,7 @@
                   <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
                 <div class="step-label">
-                  <span class="step-title">commStepOne()</span>
+                  <span class="step-title">comm_step_one()</span>
                   <span class="step-state">Waiting</span>
                 </div>
               </div>
@@ -928,7 +928,7 @@
                   <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
                 <div class="step-label">
-                  <span class="step-title">dbos.Recv("approval")</span>
+                  <span class="step-title">ctx.recv("approval")</span>
                   <span class="step-state">Waiting</span>
                 </div>
               </div>
@@ -938,7 +938,7 @@
                   <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
                 <div class="step-label">
-                  <span class="step-title">commStepTwo()</span>
+                  <span class="step-title">comm_step_two()</span>
                   <span class="step-state">Waiting</span>
                 </div>
               </div>
@@ -951,7 +951,7 @@
         <p class="footer">
           <span class="line">
             Check out the
-            <a href="https://docs.dbos.dev/golang/tutorials/workflow-communication" target="_blank">workflow communication guide</a>
+            <a href="https://docs.rs/durare/latest/durare/messaging/" target="_blank">workflow communication guide</a>
             to learn more about messages, events, streams, and their usage patterns.
           </span>
         </p>
