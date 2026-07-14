@@ -12,8 +12,8 @@ use axum::{
     Json, Router,
 };
 use durare::{
-    ApplySchedule, DurableContext, DurableEngine, ListFilter, PostgresProvider, Result,
-    ScheduleStatus, ScheduledInput, WorkflowOptions, WorkflowQueue, WorkflowStatus,
+    ApplySchedule, DurableContext, DurableEngine, EngineConfig, ListFilter, PostgresProvider,
+    Result, ScheduleStatus, ScheduledInput, WorkflowOptions, WorkflowQueue, WorkflowStatus,
 };
 use serde::Deserialize;
 use serde_json::json;
@@ -147,7 +147,15 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
         .expect("set DBOS_SYSTEM_DATABASE_URL (or DATABASE_URL) to a Postgres URL");
 
     let provider = PostgresProvider::connect(&db_url).await?;
-    let mut engine = DurableEngine::new(Arc::new(provider)).await?;
+    // Opt in to recovery on launch (off by default in durare): `launch()` itself
+    // resumes any workflow a previous run — e.g. the /crash endpoint — left
+    // unfinished, replaying it from its last checkpoint so completed steps are
+    // served from the log and never re-run. Recovery runs in the background, so
+    // the server is serving again immediately after a restart. Sound here
+    // because the starter is a single process: its executor id has one live
+    // owner.
+    let config = EngineConfig::default().recover_on_launch(true);
+    let mut engine = DurableEngine::with_config(Arc::new(provider), config).await?;
 
     // Register the demo queue *before* launch. durare seals queue registration at
     // launch (see the note on the concurrency handler), so this is where worker
@@ -157,16 +165,6 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     );
 
     engine.launch().await?;
-
-    // Resume any workflows a previous run (e.g. the /crash endpoint) left
-    // unfinished. In durare, recovery is an explicit call after launch — a
-    // crashed workflow replays from its last checkpoint, so completed steps are
-    // served from the log and never re-run.
-    match engine.recover().await {
-        Ok(n) if n > 0 => println!("Recovered {n} workflow(s) left pending by a previous run."),
-        Ok(_) => {}
-        Err(e) => eprintln!("Recovery error: {e}"),
-    }
 
     let engine = Arc::new(engine);
 

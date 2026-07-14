@@ -76,10 +76,14 @@ The app serves at <http://localhost:8080>, with the DBOS admin server on
 
 The port is faithful, with two differences that reflect durare's design:
 
-- **Recovery is an explicit call.** After `launch()`, the app calls
-  `engine.recover()` to resume workflows a previous run left unfinished (durare
-  keeps launch and recovery separate). This is what makes the **Crash the app**
-  demo resume rather than strand its workflow.
+- **Recovery on launch is opt-in.** The engine is built with
+  `EngineConfig::default().recover_on_launch(true)` (durare ≥ 0.3.2), so
+  `launch()` itself resumes workflows a previous run left unfinished — this is
+  what makes the **Crash the app** demo resume rather than strand its workflow.
+  It is off by default in durare because it is only sound when each live
+  process has a unique executor id; a single-process starter satisfies that.
+  Recovery runs in the background, so the server binds immediately after a
+  restart instead of waiting for the recovered workflow to finish.
 - **Queue configuration is sealed at launch.** durare's `register_queue` takes
   `&mut self` and the engine is shared `&self` afterward, so worker concurrency
   is set once, before `launch()` — it cannot be retuned at runtime the way the
