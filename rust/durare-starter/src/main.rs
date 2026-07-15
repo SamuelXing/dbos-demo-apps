@@ -193,7 +193,7 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
             engine.clone(),
             durare::ConductorConfig {
                 url: std::env::var("DBOS_CONDUCTOR_URL")
-                    .unwrap_or_else(|_| "wss://conductor.dbos.dev".into()),
+                    .unwrap_or_else(|_| "wss://cloud.dbos.dev/conductor/v1alpha1".into()),
                 api_key: key,
                 app_name: "durare-starter".into(),
                 executor_metadata: None,
