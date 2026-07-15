@@ -42,6 +42,36 @@ cargo run
 The app serves at <http://localhost:8080>, with the DBOS admin server on
 <http://localhost:3001>.
 
+## Connecting to the DBOS console (optional)
+
+The starter can register itself with the [DBOS console](https://console.dbos.dev)
+so you can observe and manage its workflows from the web — the same control
+plane the Go and Python SDKs connect to.
+
+1. Register a self-hosted application named **`durare-starter`** at
+   <https://console.dbos.dev/self-host> and copy the Conductor API key. The
+   name must match — it is part of the websocket path the app dials.
+2. Run with the key (and, optionally, a distinct executor id):
+
+   ```bash
+   export DBOS_CONDUCTOR_KEY="<your key>"
+   export DBOS__VMID=starter-1   # optional; defaults to "local"
+   cargo run
+   ```
+
+   Without `DBOS_CONDUCTOR_KEY` the console link is skipped entirely.
+3. Verify: the app logs `connected to DBOS conductor` within seconds (a bad
+   key or name shows repeating `failed to connect to conductor` warnings
+   instead — the client retries with backoff forever). In the console, the
+   app shows one connected executor (`language: rust`).
+4. Exercise it: start `ExampleWorkflow` from the frontend and watch it appear
+   in the console's workflow list (it takes ~15s, so you will catch it
+   `PENDING`); open it to see the three steps with timings. The cron schedule
+   and the queue views populate too. Cancelling or resuming a run from the
+   console takes effect in the app — and after **Crash the app**, a restart
+   shows the interrupted workflow finish from its checkpoint, visible from
+   the console as `PENDING → SUCCESS` without re-running completed steps.
+
 ## What it demonstrates
 
 - **Workflows and steps** — `ExampleWorkflow` runs three durable steps and
