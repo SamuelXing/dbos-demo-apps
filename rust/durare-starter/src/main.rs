@@ -142,6 +142,15 @@ async fn communication_workflow(ctx: DurableContext, _input: String) -> Result<S
 
 #[tokio::main]
 async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
+    // Surface durare's logs (e.g. the conductor's "connected to DBOS
+    // conductor" line). `RUST_LOG` overrides the default filter.
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| "durare=info".into()),
+        )
+        .init();
+
     let db_url = std::env::var("DBOS_SYSTEM_DATABASE_URL")
         .or_else(|_| std::env::var("DATABASE_URL"))
         .expect("set DBOS_SYSTEM_DATABASE_URL (or DATABASE_URL) to a Postgres URL");
@@ -171,6 +180,28 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     // The DBOS admin HTTP server (health, recovery, workflow management). Held
     // for the process lifetime; it runs on its own task.
     let _admin = durare::AdminServer::start(engine.clone(), 3001).await?;
+
+    // The DBOS console link (https://console.dbos.dev): a websocket client the
+    // console pushes management requests through. Opt-in — set
+    // DBOS_CONDUCTOR_KEY to the Conductor API key for an app registered as
+    // "durare-starter" (the name must match; it is part of the websocket
+    // path). Held for the process lifetime, like the admin server; the
+    // connection self-heals with backoff, so a bad key shows as repeating
+    // "failed to connect to conductor" warnings rather than an exit.
+    let _conductor = match std::env::var("DBOS_CONDUCTOR_KEY") {
+        Ok(key) => Some(durare::Conductor::start(
+            engine.clone(),
+            durare::ConductorConfig {
+                url: std::env::var("DBOS_CONDUCTOR_URL")
+                    .unwrap_or_else(|_| "wss://conductor.dbos.dev".into()),
+                api_key: key,
+                app_name: "durare-starter".into(),
+                executor_metadata: None,
+                alert_handler: None,
+            },
+        )?),
+        Err(_) => None,
+    };
 
     let app = Router::new()
         .route("/", get(index))
